@@ -11,8 +11,7 @@ background_img = pygame.image.load("c:/Users/lisaa/workspace/idleclicker/Leonard
 background_img = pygame.transform.scale(background_img, (375, 667))
 background = background_img
 
-# Load chef icon image
-Icon_img = pygame.image.load("C:/Users/lisaa/workspace/idleclicker/ChefCircle.png").convert_alpha()
+Icon_img = pygame.image.load("C:\Users\lisaa\workspace\idleclicker\ChefCircle.png")
 
 # Colors
 red = (255, 80, 80)
@@ -40,21 +39,6 @@ stations = [
     {"name": "Cake 🍰", "color": purple, "value": 5, "speed": 1, "length": 0, "draw": False, "auto": False, "upgrade_cost": 40, "manager_cost": 300, "manager_level": 0},
 ]
 
-def draw_circular_icon(image, position, size):
-    # Resize the image
-    icon_scaled = pygame.transform.smoothscale(image, (size, size)).convert_alpha()
-
-    # Create a surface for the mask
-    mask_surface = pygame.Surface((size, size), pygame.SRCALPHA)
-    pygame.draw.circle(mask_surface, (255, 255, 255, 255), (size // 2, size // 2), size // 2)
-
-    # Apply mask using BLEND_RGBA_MIN
-    icon_scaled.blit(mask_surface, (0, 0), special_flags=pygame.BLEND_RGBA_MIN)
-
-    # Blit the icon to the screen
-    screen.blit(icon_scaled, position)
-
-    return pygame.Rect(position[0], position[1], size, size)
 
 def draw_station(station, y):
     global score
@@ -70,16 +54,13 @@ def draw_station(station, y):
         station["length"] = 0
         score += station["value"]
 
-    # Draw circular icon
-    icon_rect = draw_circular_icon(Icon_img, (10, y - 20), 40)
-    pygame.draw.circle(screen, black, icon_rect.center, icon_rect.width // 2, 2)
+    # Icons and progress bar
+    pygame.draw.circle(screen, station["color"], (30, y), 20)
+    pygame.draw.rect(screen, station["color"], [70, y - 15, 230, 30])
+    pygame.draw.rect(screen, black, [75, y - 10, 225, 20])
+    pygame.draw.rect(screen, station["color"], [70, y - 15, station["length"], 30])
 
-    # Progress bar with black border and background
-    pygame.draw.rect(screen, black, [70, y - 15, 230, 30], 2)  # Border
-    pygame.draw.rect(screen, gray, [72, y - 13, 226, 26])      # Background
-    pygame.draw.rect(screen, station["color"], [72, y - 13, station["length"], 26])  # Fill
-
-    # Text
+    # Text and buttons
     label = font.render(station["name"], True, white)
     screen.blit(label, (70 + (230 - station["length"]) // 2, y - 8))
 
@@ -98,15 +79,15 @@ def draw_station(station, y):
     screen.blit(upg_label, (upg_btn.x + 2, upg_btn.y + 2))
     screen.blit(mgr_label, (mgr_btn.x + 2, mgr_btn.y + 2))
 
-    return icon_rect, upg_btn, mgr_btn
+    return pygame.Rect(10, y - 20, 40, 40), upg_btn, mgr_btn
 
 
-# Game loop
 running = True
 while running:
     timer.tick(framerate)
     screen.blit(background, (0, 0))
 
+    # Draw stations and cache button rects
     station_rects = []
     for i, station in enumerate(stations):
         task_y = 50 + i * 65

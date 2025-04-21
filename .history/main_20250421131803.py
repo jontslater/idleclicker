@@ -71,13 +71,15 @@ def draw_station(station, y):
         score += station["value"]
 
     # Draw circular icon
-    icon_rect = draw_circular_icon(Icon_img, (10, y - 20), 40)
-    pygame.draw.circle(screen, black, icon_rect.center, icon_rect.width // 2, 2)
+    icon_rect = draw_circular_icon(Icon_img, (10, y - 20), 40,)
+    pygame.draw.rect(screen, black, icon_rect, 2)
 
+    # Progress bar background
     # Progress bar with black border and background
     pygame.draw.rect(screen, black, [70, y - 15, 230, 30], 2)  # Border
     pygame.draw.rect(screen, gray, [72, y - 13, 226, 26])      # Background
     pygame.draw.rect(screen, station["color"], [72, y - 13, station["length"], 26])  # Fill
+
 
     # Text
     label = font.render(station["name"], True, white)
@@ -99,7 +101,6 @@ def draw_station(station, y):
     screen.blit(mgr_label, (mgr_btn.x + 2, mgr_btn.y + 2))
 
     return icon_rect, upg_btn, mgr_btn
-
 
 # Game loop
 running = True
